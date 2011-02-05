@@ -3,8 +3,9 @@ import Test.Framework.Providers.HUnit
 --import Test.Framework.Providers.QuickCheck (testProperty)
 
 import CheckPtTests.DataSetTests
+import CheckPtTests.MediaCollectionTests
 
 main = defaultMain tests
 
 -- concat on more tests from other modules here
-tests = dataSetTests
+tests = dataSetTests ++ mediaCollectionTests
