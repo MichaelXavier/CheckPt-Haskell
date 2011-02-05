@@ -1,0 +1,19 @@
+Name:                CheckPt
+Version:             0.0
+Description:         CheckList for Consumable Media
+License:             GPL
+License-file:        LICENSE
+Author:              Michael Xavier
+Copyright:           Copyright: (c) 2011 Michael Xavier
+Maintainer:          michael@michaelxavier.net
+Build-Type:          Simple
+Cabal-Version:       >=1.2
+extra-source-files:  README
+
+Executable checkpt
+  Main-is:           CheckPt.hs
+  Build-Depends:     base >= 3 && < 5
+  Other-Modules:     CheckPt
+                     CheckPt.MediaCollection
+                     CheckPt.MediaItem
+                     CheckPt.SimpleMediaCollection
