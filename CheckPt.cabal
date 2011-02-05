@@ -17,3 +17,15 @@ Executable checkpt
                      CheckPt.MediaCollection
                      CheckPt.MediaItem
                      CheckPt.SimpleMediaCollection
+flag test
+  description: Build test program.
+  default:     False
+
+Executable test
+  Hs-Source-Dirs:  CheckPt, test
+--other-modules:   MyModule1, MyModule2
+  Main-is:         Main.hs
+  Build-Depends:   base
+  if !flag(test)
+    buildable:     False
+
