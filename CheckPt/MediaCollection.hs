@@ -1,11 +1,11 @@
-module CheckPt.MediaCollection ( MediaCollection, push ) where
+module CheckPt.MediaCollection ( MediaCollection(..), push ) where
 
 {-# LANGUAGE DeriveDataTypeable #-}   
 
 import Text.JSON
 import Text.JSON.Generic
 
-import CheckPt.MediaItem
+import CheckPt.MediaItem hiding (name)
 
 data MediaCollection = MediaCollection { name :: String,
                                          items :: [MediaItem]

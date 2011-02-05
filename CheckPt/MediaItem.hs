@@ -1,4 +1,4 @@
-module CheckPt.MediaItem ( MediaItem ) where
+module CheckPt.MediaItem ( MediaItem(MediaItem), name, completed ) where
 
 {-# LANGUAGE DeriveDataTypeable #-}   
 

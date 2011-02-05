@@ -9,6 +9,6 @@ module CheckPt (
   module CheckPt.MediaItem
 ) where
 
-import CheckPt.DataSet
-import CheckPt.MediaCollection
-import CheckPt.MediaItem
+import qualified CheckPt.DataSet
+import qualified CheckPt.MediaCollection
+import qualified CheckPt.MediaItem

@@ -7,25 +7,36 @@ Author:              Michael Xavier
 Copyright:           Copyright: (c) 2011 Michael Xavier
 Maintainer:          michael@michaelxavier.net
 Build-Type:          Simple
-Cabal-Version:       >=1.2
+Cabal-Version:       >= 1.2
 extra-source-files:  README
 
 Executable checkpt
   Main-is:           CheckPt.hs
-  Build-Depends:     base >= 3 && < 5
+  Build-Depends:     base >= 3 && < 5,
+                     json == 0.4.*
   Other-Modules:     CheckPt
                      CheckPt.DataSet
                      CheckPt.MediaCollection
                      CheckPt.MediaItem
+  Extensions:        DeriveDataTypeable
+
 flag test
   description: Build test program.
   default:     False
 
 Executable test
-  Hs-Source-Dirs:  CheckPt, test
---other-modules:   MyModule1, MyModule2
+  Hs-Source-Dirs:  CheckPt, test, .
+  Other-Modules:   CheckPt
+                   CheckPt.DataSet
+                   CheckPt.MediaCollection
+                   CheckPt.MediaItem
   Main-is:         Main.hs
-  Build-Depends:   base
+  Build-Depends:   base >= 3 && < 5,
+                   json == 0.4.*,
+                   HUnit == 1.2.2.*,
+                   test-framework == 0.3.*,
+                   test-framework-hunit == 0.2.*
+  Extensions:        DeriveDataTypeable
   if !flag(test)
     buildable:     False
 
