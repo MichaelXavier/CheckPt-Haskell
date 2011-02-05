@@ -14,3 +14,6 @@ data DataSet = Dataset { collections :: [MediaCollection],
 
 parse :: String -> DataSet
 parse = decodeJSON
+
+stringify :: Dataset -> String
+stringify = encodeJSON
