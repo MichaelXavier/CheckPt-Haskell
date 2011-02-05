@@ -1,14 +1,15 @@
 module CheckPt.MediaCollection ( MediaCollection, push ) where
 
+{-# LANGUAGE DeriveDataTypeable #-}   
+
+import Text.JSON
+import Text.JSON.Generic
+
 import CheckPt.MediaItem
-import CheckPt.SimpleMediaCollection
-
---The functions will probbaly clash, which is why you want different modules
-
 
 data MediaCollection = MediaCollection { name :: String,
                                          items :: [MediaItem]
-                                       } deriving (Show)
+                                       } deriving (Eq, Show, Data, Typeable)
 
 --TODO: just make it an instance of Enum or something
 push :: MediaCollection -> MediaItem -> MediaCollection

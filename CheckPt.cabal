@@ -14,9 +14,9 @@ Executable checkpt
   Main-is:           CheckPt.hs
   Build-Depends:     base >= 3 && < 5
   Other-Modules:     CheckPt
+                     CheckPt.DataSet
                      CheckPt.MediaCollection
                      CheckPt.MediaItem
-                     CheckPt.SimpleMediaCollection
 flag test
   description: Build test program.
   default:     False

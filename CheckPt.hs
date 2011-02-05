@@ -4,11 +4,11 @@
 --
  
 module CheckPt (
+  module CheckPt.DataSet,
   module CheckPt.MediaCollection,
-  module CheckPt.MediaItem,
-  module CheckPt.SimpleMediaCollection
+  module CheckPt.MediaItem
 ) where
 
+import CheckPt.DataSet
 import CheckPt.MediaCollection
 import CheckPt.MediaItem
-import CheckPt.SimpleMediaCollection
