@@ -1,1 +1,15 @@
-My attempt at a Haskell implementation of my CheckPt project
+CheckPt Haskell
+---------------
+
+My attempt at a Haskell implementation of my CheckPt project.
+
+It will provide a CLI for managing media items to be consumed (books, movies,
+television). The workflow will be optimized for media items as files, but
+tangible items such as physical books can be used as well.
+
+
+Disclaimer
+==========
+As with all of the various CheckPt implementations I've created, this is mostly
+a learning experience for me, so do not expect the file to work (well) unless
+otherwise stated.
