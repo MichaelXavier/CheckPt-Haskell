@@ -7,13 +7,9 @@ import qualified System.Console.CmdArgs as Arg
 import           System.Console.CmdArgs((+=),Annotate((:=)),(&=))
 
 import CheckPt.Config (Config(..), defaultConfig)
-import CheckPt.CLI.Add (execute) as CAdd
+import CheckPt.CLI.Mode (Mode(..))
+import CheckPt.CLI.Add as CAdd (execute)
 
-
-data Mode
-  = Add  { name :: String, completed :: Bool }
-  | List {}
-  deriving (Show, Typeable, Data)
 
 -- Valid modes for checkpt executable:
 -- add, list, ... more to come
@@ -31,8 +27,7 @@ modes  = Arg.modes_  [add, list]
     []
     += Arg.help "Display your list"
 
---TODO: figure out routing, need a routing module that looks like
--- Mode -> IO()
+-- Need a way to lift CAdd so that its final argument can be an IO action
 dispatch :: Mode -> IO ()
 dispatch m = case m of
   Add {}     -> CAdd.execute m defaultConfig
