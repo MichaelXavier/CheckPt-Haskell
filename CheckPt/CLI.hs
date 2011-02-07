@@ -1,10 +1,13 @@
-module CheckPt.CLI ( modes, dispatch ) where
+module CheckPt.CLI ( modes, dispatch, Mode(..) ) where
 
 import Data.Typeable(Typeable)
 import Data.Data    (Data    )
 
 import qualified System.Console.CmdArgs as Arg
 import           System.Console.CmdArgs((+=),Annotate((:=)),(&=))
+
+import CheckPt.Config (Config(..), defaultConfig)
+import CheckPt.CLI.Add (execute) as CAdd
 
 
 data Mode
@@ -32,5 +35,5 @@ modes  = Arg.modes_  [add, list]
 -- Mode -> IO()
 dispatch :: Mode -> IO ()
 dispatch m = case m of
-  Add {}     -> return undefined
+  Add {}     -> CAdd.execute m defaultConfig
   List {} -> return undefined

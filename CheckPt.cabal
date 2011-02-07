@@ -14,8 +14,12 @@ Executable checkpt
   Main-is:           CheckPt.hs
   Build-Depends:     base >= 3 && < 5,
                      json == 0.4.*,
-                     cmdargs == 0.6.*
+                     cmdargs == 0.6.*,
+                     directory == 1.0.1.*,
+                     filepath == 1.1.0.*
   Other-Modules:     CheckPt
+                     CheckPt.CLI
+                     CheckPt.CLI.Add
                      CheckPt.DataSet
                      CheckPt.MediaCollection
                      CheckPt.MediaItem
@@ -28,6 +32,8 @@ flag test
 Executable test
   Hs-Source-Dirs:  CheckPt, test, .
   Other-Modules:   CheckPt
+                   CheckPt.CLI
+                   CheckPt.CLI.Add
                    CheckPt.DataSet
                    CheckPt.MediaCollection
                    CheckPt.MediaItem
@@ -35,6 +41,8 @@ Executable test
   Build-Depends:   base >= 3 && < 5,
                    json == 0.4.*,
                    cmdargs == 0.6.*,
+                   directory == 1.0.1.*,
+                   filepath == 1.1.0.*,
                    HUnit == 1.2.2.*,
                    test-framework == 0.3.*,
                    test-framework-hunit == 0.2.*

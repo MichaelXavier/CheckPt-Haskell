@@ -6,12 +6,14 @@
 -- CheckPt Specific
 module CheckPt (
   module CheckPt.CLI,
+  module CheckPt.CLI.Add,
   module CheckPt.DataSet,
   module CheckPt.MediaCollection,
   module CheckPt.MediaItem
 ) where
 
 import qualified CheckPt.CLI
+import qualified CheckPt.CLI.Add
 import qualified CheckPt.DataSet
 import qualified CheckPt.MediaCollection
 import qualified CheckPt.MediaItem

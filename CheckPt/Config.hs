@@ -1,5 +1,9 @@
-module CheckPt.DataSet ( DataSet ) where
+module CheckPt.Config ( Config(..), defaultConfig ) where
 
-import CheckPt.MediaCollection
+import System.Directory ( getHomeDirectory )
 
-type DataSet = [MediaCollection]
+data Config = Config { dataPath :: FilePath }
+
+defaultConfig :: IO Config
+defaultConfig = do path <- getHomeDirectory 
+                   return Config { dataPath = path }
