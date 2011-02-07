@@ -1,4 +1,4 @@
-module CheckPt.DataSet ( DataSet(DataSet), collections, items, parse ) where
+module CheckPt.DataSet ( DataSet(..), parse ) where
 
 {-# LANGUAGE DeriveDataTypeable #-}   
 

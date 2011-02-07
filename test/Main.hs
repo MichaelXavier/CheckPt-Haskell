@@ -4,8 +4,9 @@ import Test.Framework.Providers.HUnit
 
 import CheckPtTests.DataSetTests
 import CheckPtTests.MediaCollectionTests
+import CheckPtTests.MediaItemTests
 
 main = defaultMain tests
 
 -- concat on more tests from other modules here
-tests = dataSetTests ++ mediaCollectionTests
+tests = dataSetTests ++ mediaCollectionTests ++ mediaItemTests

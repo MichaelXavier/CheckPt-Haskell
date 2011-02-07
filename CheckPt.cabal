@@ -13,7 +13,8 @@ extra-source-files:  README
 Executable checkpt
   Main-is:           CheckPt.hs
   Build-Depends:     base >= 3 && < 5,
-                     json == 0.4.*
+                     json == 0.4.*,
+                     cmdargs == 0.6.*
   Other-Modules:     CheckPt
                      CheckPt.DataSet
                      CheckPt.MediaCollection
@@ -33,6 +34,7 @@ Executable test
   Main-is:         Main.hs
   Build-Depends:   base >= 3 && < 5,
                    json == 0.4.*,
+                   cmdargs == 0.6.*,
                    HUnit == 1.2.2.*,
                    test-framework == 0.3.*,
                    test-framework-hunit == 0.2.*
