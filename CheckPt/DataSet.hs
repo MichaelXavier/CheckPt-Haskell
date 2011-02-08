@@ -1,4 +1,4 @@
-module CheckPt.DataSet ( DataSet(..), parse, dataSetPath ) where
+module CheckPt.DataSet ( DataSet(..), readDataSet, parseDataSet, stringify, dataSetPath ) where
 
 {-# LANGUAGE DeriveDataTypeable #-}   
 
@@ -16,11 +16,11 @@ data DataSet = DataSet { collections :: [MediaCollection],
                        } deriving (Eq, Show, Data, Typeable)
 
 --FIXME: needs a lift?
-read :: Config -> IO (DataSet)
-read c =  fmap parse $ readFile $ dataPath c
+readDataSet :: Config -> IO (DataSet)
+readDataSet c =  fmap parseDataSet $ readFile $ dataPath c
 
-parse :: String -> DataSet
-parse = decodeJSON
+parseDataSet :: String -> DataSet
+parseDataSet = decodeJSON
 
 stringify :: DataSet -> String
 stringify = encodeJSON
