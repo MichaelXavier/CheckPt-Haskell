@@ -30,5 +30,5 @@ modes  = Arg.modes_  [add, list]
 -- Need a way to lift CAdd so that its final argument can be an IO action
 dispatch :: Mode -> IO ()
 dispatch m = case m of
-  Add {}     -> CAdd.execute m defaultConfig
+  Add {}  -> defaultConfig >>= CAdd.execute m
   List {} -> return undefined
