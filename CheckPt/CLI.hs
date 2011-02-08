@@ -9,6 +9,7 @@ import           System.Console.CmdArgs((+=),Annotate((:=)),(&=))
 import CheckPt.Config (Config(..), defaultConfig)
 import CheckPt.CLI.Mode (Mode(..))
 import CheckPt.CLI.Add as CAdd (execute)
+import CheckPt.CLI.List as CList (execute)
 
 
 -- Valid modes for checkpt executable:
@@ -27,8 +28,8 @@ modes  = Arg.modes_  [add, list]
     []
     += Arg.help "Display your list"
 
--- Need a way to lift CAdd so that its final argument can be an IO action
+--TODO: support custom configs
 dispatch :: Mode -> IO ()
 dispatch m = case m of
   Add {}  -> defaultConfig >>= CAdd.execute m
-  List {} -> return undefined
+  List {} -> defaultConfig >>= CList.execute m
