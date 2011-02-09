@@ -3,6 +3,8 @@ module CheckPt.DataSet ( DataSet(..),
                          writeDataSet,
                          parseDataSet,
                          stringify,
+                         pushItem,
+                         pushCollection,
                          dataSetPath ) where
 
 {-# LANGUAGE DeriveDataTypeable #-}   
@@ -40,6 +42,12 @@ dataSetPath = flip (</>) (".checkpt")
 
 extractDataSetPath :: Config -> FilePath
 extractDataSetPath = dataSetPath . dataPath
+
+pushItem :: DataSet -> MediaItem -> DataSet
+pushItem ds mi = ds { items = mi:(items ds) }
+
+pushCollection :: DataSet -> MediaCollection -> DataSet
+pushCollection ds mc = ds { collections = mc:(collections ds) }
 
 instance Show DataSet where
   show ds = join is mcs 
