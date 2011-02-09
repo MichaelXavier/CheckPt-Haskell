@@ -26,10 +26,10 @@ test4 = testCase "Does nothing on incomplete item" $ (MI.completed $ MI.uncomple
 
 group3 = testGroup "MediaItem show" [test5, test6]
 
-test5 = testCase "Prints a an empty checkbox if incomplete" $ (show mi) @?= str
+test5 = testCase "Prints a an empty checkbox if incomplete" $ show mi @?= str
           where mi  = MI.MediaItem { MI.name = "Foo Bar", MI.completed = False }
                 str = "[ ] Foo Bar"
 
-test6 = testCase "Prints a an checked checkbox if complete" $ (show mi) @?= str
+test6 = testCase "Prints a an checked checkbox if complete" $ show mi @?= str
           where mi  = MI.MediaItem { MI.name = "Foo Bar", MI.completed = True }
                 str = "[X] Foo Bar"
