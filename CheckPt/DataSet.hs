@@ -17,8 +17,9 @@ data DataSet = DataSet { collections :: [MediaCollection],
                          items :: [MediaItem] 
                        } deriving (Eq, Data, Typeable)
 
+--FIXME: this is really ugly, I'm addicted to $
 readDataSet :: Config -> IO (DataSet)
-readDataSet c =  fmap parseDataSet $ readFile $ dataPath c
+readDataSet c =  fmap parseDataSet $ readFile $ dataSetPath $ dataPath c
 
 parseDataSet :: String -> DataSet
 parseDataSet = decodeJSON
@@ -27,7 +28,7 @@ stringify :: DataSet -> String
 stringify = encodeJSON
 
 dataSetPath :: FilePath -> FilePath
-dataSetPath = flip (</>) (".checkpt.json")
+dataSetPath = flip (</>) (".checkpt")
 
 instance Show DataSet where
   show ds = join is mcs 

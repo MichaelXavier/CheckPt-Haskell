@@ -34,9 +34,9 @@ test4 = testCase "Parses Items" $ (DS.items $ DS.parseDataSet json) @?= [mi1]
 
 group2 = testGroup "DataSet datasetPath" [test5]
 
-test5 = testCase "Appends \".checkpt.json\" to the path" $ DS.dataSetPath base @?= final
+test5 = testCase "Appends \".checkpt\" to the path" $ DS.dataSetPath base @?= final
           where base = "/home/michael"
-                final = "/home/michael/.checkpt.json"
+                final = "/home/michael/.checkpt"
 
 group3 = testGroup "DataSet stringify" [test6, test7, test8]
 

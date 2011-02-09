@@ -11,7 +11,7 @@ Cabal-Version:       >= 1.2
 extra-source-files:  README
 
 Executable checkpt
-  Main-is:           CheckPt.hs
+  Main-is:           Main.hs
   Build-Depends:     base >= 3 && < 5,
                      json == 0.4.*,
                      cmdargs == 0.6.*,
