@@ -17,7 +17,6 @@ data DataSet = DataSet { collections :: [MediaCollection],
                          items :: [MediaItem] 
                        } deriving (Eq, Data, Typeable)
 
---FIXME: needs a lift?
 readDataSet :: Config -> IO (DataSet)
 readDataSet c =  fmap parseDataSet $ readFile $ dataPath c
 
