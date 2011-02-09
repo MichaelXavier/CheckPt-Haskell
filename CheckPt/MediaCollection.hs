@@ -5,7 +5,7 @@ module CheckPt.MediaCollection ( MediaCollection(..), push ) where
 import Text.JSON
 import Text.JSON.Generic
 
-import Data.List (intercalate, intersperse)
+import Data.List (intercalate)
 
 import CheckPt.MediaItem hiding (name)
 
