@@ -1,4 +1,9 @@
-module CheckPt.DataSet ( DataSet(..), readDataSet, parseDataSet, stringify, dataSetPath ) where
+module CheckPt.DataSet ( DataSet(..), 
+                         readDataSet,
+                         writeDataSet,
+                         parseDataSet,
+                         stringify,
+                         dataSetPath ) where
 
 {-# LANGUAGE DeriveDataTypeable #-}   
 
@@ -19,7 +24,10 @@ data DataSet = DataSet { collections :: [MediaCollection],
 
 --FIXME: this is really ugly, I'm addicted to $
 readDataSet :: Config -> IO (DataSet)
-readDataSet c =  fmap parseDataSet $ readFile $ dataSetPath $ dataPath c
+readDataSet c =  fmap parseDataSet $ readFile $ extractDataSetPath c
+
+writeDataSet :: Config -> DataSet -> IO ()
+writeDataSet c ds = writeFile (extractDataSetPath c) (stringify ds)
 
 parseDataSet :: String -> DataSet
 parseDataSet = decodeJSON
@@ -29,6 +37,9 @@ stringify = encodeJSON
 
 dataSetPath :: FilePath -> FilePath
 dataSetPath = flip (</>) (".checkpt")
+
+extractDataSetPath :: Config -> FilePath
+extractDataSetPath = dataSetPath . dataPath
 
 instance Show DataSet where
   show ds = join is mcs 
