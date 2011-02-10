@@ -21,9 +21,11 @@ modes  = Arg.modes_  [add, list]
       += Arg.help    "TODO:"
   where
   add = Arg.record Add {name = Arg.def, completed = Arg.def}
-    [name := error "Must specify a name",
+    [name := error "Must specify a name"
+          += Arg.argPos 0
+          += Arg.typ "NAME",
      completed := False]
-    += Arg.help "Add an item to your list"
+    += Arg.help "Add a root level item to your list"
   list = Arg.record List {}
     []
     += Arg.help "Display your list"

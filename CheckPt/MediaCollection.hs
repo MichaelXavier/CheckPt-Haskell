@@ -1,6 +1,5 @@
-module CheckPt.MediaCollection ( MediaCollection(..), push ) where
-
 {-# LANGUAGE DeriveDataTypeable #-}   
+module CheckPt.MediaCollection ( MediaCollection(..), push ) where
 
 import Text.JSON
 import Text.JSON.Generic

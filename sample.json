@@ -1,0 +1,16 @@
+{
+  "dscollections":{
+    "Mad Mayne":{
+      "mcitems":[
+        {
+          "name":"Episode 1",
+          "completed":false
+        },
+        {
+          "name":"Episode 2",
+          "completed":true
+        }
+      ]
+    }
+  }
+}

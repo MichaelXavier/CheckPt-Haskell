@@ -1,6 +1,5 @@
-module CheckPt.MediaItem ( MediaItem(..), complete, uncomplete) where
-
 {-# LANGUAGE DeriveDataTypeable #-}   
+module CheckPt.MediaItem ( MediaItem(..), complete, uncomplete) where
 
 import Text.JSON
 import Text.JSON.Generic

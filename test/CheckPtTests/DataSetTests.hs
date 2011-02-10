@@ -10,13 +10,14 @@ import qualified CheckPt.DataSet as DS
 import qualified CheckPt.MediaItem as MI
 import qualified CheckPt.MediaCollection as MC
 
-dataSetTests = [group1, group2, group3, group4]
+dataSetTests = [group1, group2, group3, group4, group5, group6]
 
 -- Fixtures (yay functional programming!)
 mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = []}
 mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = []}
 mi1 = MI.MediaItem { MI.name = "Foo1", MI.completed = False}
 mi2 = MI.MediaItem { MI.name = "Foo2", MI.completed = False}
+base_ds = DS.DataSet { DS.collections = [], DS.items = [] }
 
 group1 = testGroup "DataSet parseDataSet" [test1, test2, test3, test4]
 
@@ -40,9 +41,8 @@ test5 = testCase "Appends \".checkpt\" to the path" $ DS.dataSetPath base @?= fi
 
 group3 = testGroup "DataSet stringify" [test6, test7, test8]
 
-test6 = testCase "Correctly serializes an empty dataset" $ DS.stringify ds @?= json
+test6 = testCase "Correctly serializes an empty dataset" $ DS.stringify base_ds @?= json
           where json = "{\"collections\":[],\"items\":[]}"
-                ds   = DS.DataSet { DS.collections = [], DS.items = [] }
 
 test7 = testCase "Serializes Collections" $ DS.stringify ds @?= json
           where ds   = DS.DataSet { DS.collections = [mc1], DS.items = [] }
@@ -55,9 +55,8 @@ test8 = testCase "Serializes Items" $ DS.stringify ds @?= json
 
 group4 = testGroup "DataSet show" [test9, test10, test11, test12]
 
-test9 = testCase "Displays an empy string when empty" $ show ds @?= str
+test9 = testCase "Displays an empy string when empty" $ show base_ds @?= str
           where str = ""
-                ds  = DS.DataSet { DS.collections = [], DS.items = [] }
 
 test10 = testCase "Displays only collections when items empty" $ show ds @?= str
           where str = show mc1 ++ "\n" ++ show mc2
@@ -70,3 +69,19 @@ test11 = testCase "Displays only items when collections empty" $ show ds @?= str
 test12 = testCase "Displays items first" $ show ds @?= str
           where str = show mi1 ++ "\n" ++  show mi2 ++ "\n" ++ show mc1 ++ "\n" ++ show mc2
                 ds  = DS.DataSet { DS.collections = [mc1, mc2], DS.items = [mi1, mi2] }
+
+group5 = testGroup "DataSet pushItem" [test13, test14]
+
+test13 = testCase "Appends an item to an empty list" $ DS.items ds @?= [mi1]
+          where ds = DS.pushItem base_ds mi1
+
+test14 = testCase "Prepends an item to a non-empty list" $ head (DS.items ds) @?= mi1
+          where ds = DS.pushItem (DS.DataSet {DS.collections = [], DS.items = [mi2]}) mi1
+
+group6 = testGroup "DataSet pushCollection" [test15, test16]
+
+test15 = testCase "Appends a collection to an empty list" $ DS.collections ds @?= [mc1]
+          where ds = DS.pushCollection base_ds mc1
+
+test16 = testCase "Prepends a collection to a non-empty list" $ head (DS.collections ds) @?= mc1
+          where ds = DS.pushCollection (DS.DataSet {DS.items = [], DS.collections = [mc2]}) mc1

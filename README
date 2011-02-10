@@ -7,6 +7,23 @@ It will provide a CLI for managing media items to be consumed (books, movies,
 television). The workflow will be optimized for media items as files, but
 tangible items such as physical books can be used as well.
 
+Planned Usage
+=============
+*NOTE*: This stuff is subject to change.
+
+*Show entire list*
+checkpt list
+
+*Add a root item*
+checkpt add "Fallen Dragon"
+
+*Add a collection if it exists, list it otherwise*
+checkpt collection "Mad Men"
+
+* Add a collection and items if it doesn't exist*
+checkpt collection "Mad Mayne" "Ep 1" "Ep 2" "Ep 3"
+
+More to come...
 
 Disclaimer
 ==========
