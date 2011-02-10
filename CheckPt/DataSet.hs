@@ -15,6 +15,7 @@ import Text.JSON
 import Text.JSON.Generic
 
 import Data.List (intercalate)
+import qualified Data.ByteString.Char8 as Str
 
 import CheckPt.MediaCollection hiding (items)
 import CheckPt.MediaItem
@@ -24,9 +25,10 @@ data DataSet = DataSet { collections :: [MediaCollection],
                          items :: [MediaItem] 
                        } deriving (Eq, Data, Typeable)
 
---FIXME: this is really ugly, I'm addicted to $
 readDataSet :: Config -> IO (DataSet)
-readDataSet c =  fmap parseDataSet $ readFile $ extractDataSetPath c
+readDataSet c =  fmap parseDataSet str
+                 where path = extractDataSetPath c
+                       str  = fmap Str.unpack $ Str.readFile path
 
 writeDataSet :: Config -> DataSet -> IO ()
 writeDataSet c ds = writeFile (extractDataSetPath c) (stringify ds)
