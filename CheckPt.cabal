@@ -17,7 +17,8 @@ Executable checkpt
                      cmdargs == 0.6.*,
                      directory == 1.0.1.*,
                      filepath == 1.1.0.*,
-                     bytestring == 0.9.1.*
+                     bytestring == 0.9.1.*,
+                     haskell98
   Other-Modules:     CheckPt
                      CheckPt.CLI
                      CheckPt.CLI.Add
@@ -44,7 +45,8 @@ Executable test
                    cmdargs == 0.6.*,
                    directory == 1.0.1.*,
                    filepath == 1.1.0.*,
-                    bytestring == 0.9.1.*,
+                   bytestring == 0.9.1.*,
+                   haskell98,
                    HUnit == 1.2.2.*,
                    test-framework == 0.3.*,
                    test-framework-hunit == 0.2.*
