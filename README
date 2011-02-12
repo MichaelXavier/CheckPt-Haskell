@@ -11,10 +11,13 @@ Planned Usage
 =============
 *NOTE*: This stuff is subject to change.
 
-*Show entire list*
+*Show entire list (implemented)*
 checkpt list
 
-*Add a root item*
+*List (root level) Items (implemented)*
+checkpt list -r
+
+*Add a root item (implemented)*
 checkpt add "Fallen Dragon"
 
 *Add a collection if it exists, list it otherwise*

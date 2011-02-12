@@ -26,11 +26,12 @@ modes  = Arg.modes_  [add, list]
           += Arg.typ "NAME",
      completed := False]
     += Arg.help "Add a root level item to your list"
-  list = Arg.record List {}
-    []
+  list = Arg.record List { rootonly = Arg.def }
+    [rootonly := False
+              += Arg.help "Only list root level items"]
     += Arg.help "Display your list"
 
---TODO: support custom configs
+-- Utilities
 dispatch :: Mode -> IO ()
 dispatch m = case m of
   Add {}  -> defaultConfig >>= CAdd.execute m

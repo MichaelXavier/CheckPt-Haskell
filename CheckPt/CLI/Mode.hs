@@ -8,6 +8,6 @@ import CheckPt.Config (Config)
 
 data Mode
   = Add  { name :: String, completed :: Bool }
-  | List {}
+  | List { rootonly :: Bool }
   | Collection {}
   deriving (Show, Typeable, Data)
