@@ -9,5 +9,5 @@ import CheckPt.Config (Config)
 data Mode
   = Add  { name :: String, completed :: Bool }
   | List { rootonly :: Bool }
-  | Collection {}
+  | Collection { cname :: String , inames :: [String] }
   deriving (Show, Typeable, Data)

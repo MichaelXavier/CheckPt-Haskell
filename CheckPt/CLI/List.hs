@@ -2,13 +2,13 @@ module CheckPt.CLI.List (execute) where
 
 import Data.List (intercalate)
 
-import CheckPt.CLI.Mode (Mode(..))
+import qualified CheckPt.CLI.Mode as M (Mode(..))
 import CheckPt.Config (Config(..))
 import CheckPt.DataSet (DataSet, readDataSet, items)
 
-execute :: Mode -> Config -> IO ()
-execute List { rootonly = True} c = showItems c
-execute List { } c = showAll c
+execute :: M.Mode -> Config -> IO ()
+execute M.List { M.rootonly = True} c = showItems c
+execute M.List { } c = showAll c
 
 -- Utilities
 showAll :: Config -> IO ()

@@ -10,12 +10,13 @@ import CheckPt.Config (Config(..), defaultConfig)
 import CheckPt.CLI.Mode (Mode(..))
 import CheckPt.CLI.Add as CAdd (execute)
 import CheckPt.CLI.List as CList (execute)
+import CheckPt.CLI.Collection as CCollection (execute)
 
 
 -- Valid modes for checkpt executable:
 -- add, list, ... more to come
 modes :: Annotate Arg.Ann
-modes  = Arg.modes_  [add, list]
+modes  = Arg.modes_  [add, list, collection]
       += Arg.program "checkpt"
       += Arg.summary "checkpt: track your consumption of media"
       += Arg.help    "TODO:"
@@ -30,9 +31,18 @@ modes  = Arg.modes_  [add, list]
     [rootonly := False
               += Arg.help "Only list root level items"]
     += Arg.help "Display your list"
+  collection = Arg.record Collection { cname = Arg.def, inames = Arg.def }
+    [cname := error "Must specify a name"
+          += Arg.argPos 0
+          += Arg.typ "NAME",
+     inames := []
+          += Arg.args
+          += Arg.typ "ITEM_NAMES"]
+     += Arg.help "Add or list a collection"
 
 -- Utilities
 dispatch :: Mode -> IO ()
 dispatch m = case m of
-  Add {}  -> defaultConfig >>= CAdd.execute m
-  List {} -> defaultConfig >>= CList.execute m
+  Add {}        -> defaultConfig >>= CAdd.execute m
+  List {}       -> defaultConfig >>= CList.execute m
+  Collection {} -> defaultConfig >>= CCollection.execute m
