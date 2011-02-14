@@ -10,6 +10,10 @@ module CheckPt.DataSet ( DataSet(..),
                          lookupCollection,
                          itemExists,
                          collectionExists,
+                         clearCollections,
+                         clearCollection,
+                         clearCollectionItems,
+                         clearItem,
                          dataSetPath ) where
 
 import System.FilePath ((</>))
@@ -68,7 +72,7 @@ lookupItem :: DataSet -> String -> Maybe MI.MediaItem
 lookupItem ds n = case flist $ items ds of
                     x:xs -> Just x
                     _    -> Nothing
-                  where flist = filter ((==n) . MI.name)
+                  where flist = filter (itemMatch n)
 
 lookupCollection :: DataSet -> String -> Maybe MC.MediaCollection
 lookupCollection ds n = case flist $ collections ds of
@@ -82,6 +86,36 @@ itemExists ds s = isJust $ lookupItem ds s
 collectionExists :: DataSet -> String -> Bool
 collectionExists ds s = isJust $ lookupCollection ds s
 
+clearCollections :: DataSet -> DataSet
+clearCollections ds = ds { collections = map MC.complete $ collections ds }
+
+clearCollection :: DataSet -> String -> DataSet
+clearCollection ds n = transformCollection (MC.complete) ds n
+
+clearCollectionItems :: DataSet -> String -> [String] -> DataSet
+clearCollectionItems ds cn ins = transformCollection (flip MC.clearItems ins) ds cn
+
+clearItem :: DataSet -> String -> DataSet
+clearItem ds n = transformItem MI.complete ds n
+
 --Utilities
 extractDataSetPath :: Config -> FilePath
 extractDataSetPath = dataSetPath . dataPath
+
+itemMatch :: String -> MI.MediaItem -> Bool
+itemMatch n = ((==n) . MI.name)
+
+--TODO: see if this can be applied elsewhere
+collectionMatch :: String -> MC.MediaCollection -> Bool
+collectionMatch n = ((==n) . MC.name)
+
+-- Could do with some polymporhism here but reassembling it into the DS isn't possible
+transformItem :: (MI.MediaItem -> MI.MediaItem) -> DataSet -> String -> DataSet
+transformItem t ds n = case break (itemMatch n) $ items ds of
+                         (_, [])     -> error $ "Could not find item " ++ n
+                         (h, (x:xs)) -> ds { items = h ++ (t x):xs }
+
+transformCollection :: (MC.MediaCollection -> MC.MediaCollection) -> DataSet -> String -> DataSet
+transformCollection t ds n = case break (collectionMatch n) $ collections ds of
+                         (_, [])     -> error $ "Could not find item " ++ n
+                         (h, (x:xs)) -> ds { collections = h ++ (t x):xs }
