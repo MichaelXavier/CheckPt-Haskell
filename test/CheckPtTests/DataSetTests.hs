@@ -10,7 +10,22 @@ import qualified CheckPt.DataSet as DS
 import qualified CheckPt.MediaItem as MI
 import qualified CheckPt.MediaCollection as MC
 
-dataSetTests = [group1, group2, group3, group4, group5, group6]
+dataSetTests = [group1, 
+                group2,
+                group3,
+                group4,
+                group5,
+                group6,
+                group7,
+                group8,
+                group9,
+                group10,
+                group11,
+                group12,
+                group13,
+                group14,
+                group15,
+                group16]
 
 -- Fixtures (yay functional programming!)
 mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = []}
@@ -85,3 +100,89 @@ test15 = testCase "Appends a collection to an empty list" $ DS.collections ds @?
 
 test16 = testCase "Prepends a collection to a non-empty list" $ head (DS.collections ds) @?= mc1
           where ds = DS.pushCollection (DS.DataSet {DS.items = [], DS.collections = [mc2]}) mc1
+
+group7 = testGroup "DataSet lookupItem" [test17, test18]
+
+test17 = testCase "Finds an item by name if it exists" $ DS.lookupItem ds "Foo2" @?= (Just mi2)
+          where ds = DS.DataSet { DS.collections = [], DS.items = [mi1,mi2] }
+
+test18 = testCase "Returns Nothing if it does not exist" $ DS.lookupItem ds "Bogus" @?= Nothing
+          where ds = DS.DataSet { DS.collections = [], DS.items = [mi1,mi2] }
+
+group8 = testGroup "DataSet lookupCollection" [test17, test18]
+
+test19 = testCase "Finds a collection by name if it exists" $ DS.lookupCollection ds "Foos" @?= (Just mc2)
+          where ds = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+
+test20 = testCase "Returns Nothing if it does not exist" $ DS.lookupCollection ds "Bogus" @?= Nothing
+          where ds = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+
+group9 = testGroup "DataSet itemExists" [test21, test22]
+
+test21 = testCase "Returns True if the item is found" $ DS.itemExists ds "Foo2" @?= True
+          where ds = DS.DataSet { DS.collections = [], DS.items = [mi1,mi2] }
+
+test22 = testCase "Returns False if the item is found" $ DS.itemExists ds "Bogus" @?= False
+          where ds = DS.DataSet { DS.collections = [], DS.items = [mi1,mi2] }
+
+group10 = testGroup "DataSet collectionExists" [test23, test24]
+
+test23 = testCase "Returns True if the collection is found" $ DS.collectionExists ds "Foos" @?= True
+          where ds = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+
+test24 = testCase "Returns False if the collection is found" $ DS.collectionExists ds "Bogus" @?= False
+          where ds = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+
+group11 = testGroup "DataSet clearCollections" [test25, test26]
+
+test25 = testCase "Does nothing on with empty collections" $ DS.clearCollections base_ds @?= base_ds
+
+test26 = testCase "Sets all collections to completed" $ (all MI.completed $ concatMap MC.items $ DS.collections $ DS.clearCollections ds) @?= True
+          where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi2] }
+                mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = [mi1, mi2] }
+                ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+
+group12 = testGroup "DataSet clearCollection" [test27]
+
+test27 = testCase "Sets the found collection to completed" $ (MC.items $ last $ DS.collections $ DS.clearCollection ds "Bars") @?= [mi3,mi4]
+          where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1,mi2] }
+                mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = [mi1,mi2] }
+                mi3 = MI.MediaItem { MI.name = "Foo1", MI.completed = True}
+                mi4 = MI.MediaItem { MI.name = "Foo2", MI.completed = True}
+                ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+
+group13 = testGroup "DataSet clearCollectionItems" [test28]
+
+test28 = testCase "Only completes specific items in specific collections" $ (MC.items $ last $ DS.collections $ DS.clearCollectionItems ds "Bars" ["Foo2"]) @?= [mi1,mi3]
+          where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1,mi2] }
+                mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = [mi1,mi2] }
+                mi3 = MI.MediaItem { MI.name = "Foo2", MI.completed = True}
+                ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+
+group14 = testGroup "DataSet clearItem" [test29]
+
+test29 = testCase "Clears only the specified root item" $ (DS.items $ DS.clearItem ds "Foo2") @?= [mi1,mi3]
+          where mi3 = MI.MediaItem { MI.name = "Foo2", MI.completed = True}
+                ds  = DS.DataSet { DS.collections = [], DS.items = [mi1,mi2] }
+
+group15 = testGroup "DataSet rootNames" [test30, test31, test32]
+
+test30 = testCase "Is an empty list with no items" $ DS.rootNames base_ds @?= []
+
+test31 = testCase "is only the root items if no collections" $ DS.rootNames ds @?= ["\"Foo1\"", "\"Foo2\""]
+          where ds = DS.DataSet { DS.collections = [], DS.items = [mi1,mi2] }
+
+test32 = testCase "it combines item and collection names, items first" $ DS.rootNames ds @?= ["\"Foo1\"", "\"Foo2\"", "\"Foos\"", "\"Bars\""]
+          where ds = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [mi1,mi2] }
+
+group16 = testGroup "DataSet collectionNames" [test33, test34, test35]
+
+test33 = testCase "Is an empty list with no collections" $ DS.collectionNames base_ds "_" @?= []
+
+test34 = testCase "Is an empty list with bogus collection" $ DS.collectionNames ds "Bogus" @?= []
+          where ds = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+
+test35 = testCase "it is only the items under the specified collection" $ DS.collectionNames ds "Foos" @?= ["\"Foo1\"", "\"Foo2\""]
+          where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1,mi2] }
+                mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = [mi1,mi2] }
+                ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
