@@ -12,12 +12,13 @@ import CheckPt.CLI.Add as CAdd (execute)
 import CheckPt.CLI.List as CList (execute)
 import CheckPt.CLI.Collection as CCollection (execute)
 import CheckPt.CLI.Complete as CComplete (execute)
+import CheckPt.CLI.Names as CNames (execute)
 
 
 -- Valid modes for checkpt executable:
 -- add, list, ... more to come
 modes :: Annotate Arg.Ann
-modes  = Arg.modes_  [add, list, collection, complete]
+modes  = Arg.modes_  [add, list, collection, complete, names]
       += Arg.program "checkpt"
       += Arg.summary "checkpt: track your consumption of media"
       += Arg.help    "TODO:"
@@ -51,6 +52,11 @@ modes  = Arg.modes_  [add, list, collection, complete]
      clear := False
           += Arg.help "Mark ALL collection items complete"]
      += Arg.help "Mark an item, collection or items in a collection as complete"
+     --TODO: see if there's a way to not document this subcommand
+  names = Arg.record Names { toplevel = Arg.def }
+    [toplevel := ""
+          += Arg.args
+          += Arg.typ "COLLECTION_NAME"]
 
 -- Utilities
 dispatch :: Mode -> IO ()
@@ -59,3 +65,4 @@ dispatch m = case m of
   List {}       -> defaultConfig >>= CList.execute m
   Collection {} -> defaultConfig >>= CCollection.execute m
   Complete {}   -> defaultConfig >>= CComplete.execute m
+  Names {}      -> defaultConfig >>= CNames.execute m

@@ -14,6 +14,8 @@ module CheckPt.DataSet ( DataSet(..),
                          clearCollection,
                          clearCollectionItems,
                          clearItem,
+                         rootNames,
+                         collectionNames,
                          dataSetPath ) where
 
 import System.FilePath ((</>))
@@ -98,6 +100,16 @@ clearCollectionItems ds cn ins = transformCollection (flip MC.clearItems ins) ds
 clearItem :: DataSet -> String -> DataSet
 clearItem ds n = transformItem MI.complete ds n
 
+rootNames :: DataSet -> [String]
+rootNames ds = is ++ cs
+               where is   = map (qWrap . MI.name) $ items ds
+                     cs   = map (qWrap . MC.name) $ collections ds
+
+collectionNames :: DataSet -> String -> [String]
+collectionNames ds n = case lookupCollection ds n of
+                         Just c -> map (qWrap . MI.name) $ MC.items c
+                         _      -> []
+
 --Utilities
 extractDataSetPath :: Config -> FilePath
 extractDataSetPath = dataSetPath . dataPath
@@ -119,3 +131,6 @@ transformCollection :: (MC.MediaCollection -> MC.MediaCollection) -> DataSet -> 
 transformCollection t ds n = case break (collectionMatch n) $ collections ds of
                          (_, [])     -> error $ "Could not find item " ++ n
                          (h, (x:xs)) -> ds { collections = h ++ (t x):xs }
+
+qWrap :: String -> String
+qWrap s = '"':s ++ "\""
