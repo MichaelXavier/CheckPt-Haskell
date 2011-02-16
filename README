@@ -26,11 +26,17 @@ checkpt collection "Mad Men"
 *Add a collection and items if it doesn't exist (implemented)*
 checkpt collection "Mad Men" "Ep 1" "Ep 2" "Ep 3"
 
-*Complete a root level item*
+*Complete a root level item (implemented)*
 checkpt complete "Fallen Dragon"
 
-*Complete item(s) under a collection*
+*Complete item(s) under a collection (implemented)*
 checkpt complete "Mad Men" "Ep 1" "Ep 2" "Ep 3"
+
+*Uncomplete a root level item*
+checkpt uncomplete "Fallen Dragon"
+
+*Uncomplete item(s) under a collection*
+checkpt uncomplete "Mad Men" "Ep 1" "Ep 2" "Ep 3"
 
 TODO
 ====
