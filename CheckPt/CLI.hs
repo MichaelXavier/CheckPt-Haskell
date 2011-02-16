@@ -12,13 +12,14 @@ import CheckPt.CLI.Add as CAdd (execute)
 import CheckPt.CLI.List as CList (execute)
 import CheckPt.CLI.Collection as CCollection (execute)
 import CheckPt.CLI.Complete as CComplete (execute)
+import CheckPt.CLI.Uncomplete as CUncomplete (execute)
 import CheckPt.CLI.Names as CNames (execute)
 
 
 -- Valid modes for checkpt executable:
 -- add, list, ... more to come
 modes :: Annotate Arg.Ann
-modes  = Arg.modes_  [add, list, collection, complete, names]
+modes  = Arg.modes_  [add, list, collection, complete, uncomplete, names]
       += Arg.program "checkpt"
       += Arg.summary "checkpt: track your consumption of media"
       += Arg.help    "TODO:"
@@ -43,14 +44,10 @@ modes  = Arg.modes_  [add, list, collection, complete, names]
      += Arg.help "Add or list a collection"
   --TODO: make empty items and clear exclusive if possible
   complete = Arg.record Complete { name = Arg.def, inames = Arg.def, clear = Arg.def }
-    [name := error "Must specify a name"
-          += Arg.argPos 0
-          += Arg.typ "NAME",
-     inames := []
-          += Arg.args
-          += Arg.typ "ITEM_NAMES",
-     clear := False
-          += Arg.help "Mark ALL collection items complete"]
+     completionOpts 
+     += Arg.help "Mark an item, collection or items in a collection as complete"
+  uncomplete = Arg.record Uncomplete { name = Arg.def, inames = Arg.def, clear = Arg.def }
+     completionOpts 
      += Arg.help "Mark an item, collection or items in a collection as complete"
      --TODO: see if there's a way to not document this subcommand
   names = Arg.record Names { toplevel = Arg.def }
@@ -65,4 +62,14 @@ dispatch m = case m of
   List {}       -> defaultConfig >>= CList.execute m
   Collection {} -> defaultConfig >>= CCollection.execute m
   Complete {}   -> defaultConfig >>= CComplete.execute m
+  Uncomplete {} -> defaultConfig >>= CUncomplete.execute m
   Names {}      -> defaultConfig >>= CNames.execute m
+
+completionOpts = [name := error "Must specify a name"
+                       += Arg.argPos 0
+                       += Arg.typ "NAME",
+                  inames := []
+                       += Arg.args
+                       += Arg.typ "ITEM_NAMES",
+                  clear := False
+                       += Arg.help "Mark ALL collection items complete"]

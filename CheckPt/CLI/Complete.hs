@@ -4,7 +4,6 @@ import CheckPt.CLI.Mode (Mode(..))
 import CheckPt.Config (Config(..))
 import CheckPt.DataSet (readDataSet,
                         writeDataSet,
-                        pushItem,
                         clearCollection,
                         clearItem,
                         clearCollectionItems)

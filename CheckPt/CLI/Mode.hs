@@ -11,5 +11,6 @@ data Mode
   | List { rootonly :: Bool }
   | Collection { cname :: String , inames :: [String] }
   | Complete { name :: String , inames :: [String], clear :: Bool }
+  | Uncomplete { name :: String , inames :: [String], clear :: Bool }
   | Names { toplevel :: String }
   deriving (Show, Typeable, Data)
