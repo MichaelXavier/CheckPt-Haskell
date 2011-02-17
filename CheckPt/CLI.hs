@@ -14,12 +14,19 @@ import CheckPt.CLI.Collection as CCollection (execute)
 import CheckPt.CLI.Complete as CComplete (execute)
 import CheckPt.CLI.Uncomplete as CUncomplete (execute)
 import CheckPt.CLI.Names as CNames (execute)
+import CheckPt.CLI.Delete as CDelete (execute)
 
 
 -- Valid modes for checkpt executable:
 -- add, list, ... more to come
 modes :: Annotate Arg.Ann
-modes  = Arg.modes_  [add, list, collection, complete, uncomplete, names]
+modes  = Arg.modes_  [add,
+											list,
+											collection,
+											complete,
+											uncomplete,
+											names,
+											delete]
       += Arg.program "checkpt"
       += Arg.summary "checkpt: track your consumption of media"
       += Arg.help    "TODO:"
@@ -48,7 +55,10 @@ modes  = Arg.modes_  [add, list, collection, complete, uncomplete, names]
      += Arg.help "Mark an item, collection or items in a collection as complete"
   uncomplete = Arg.record Uncomplete { name = Arg.def, inames = Arg.def, clear = Arg.def }
      completionOpts 
-     += Arg.help "Mark an item, collection or items in a collection as complete"
+     += Arg.help "Mark an item, collection or items in a collection as incomplete"
+  delete = Arg.record Delete { name = Arg.def, inames = Arg.def, clear = Arg.def }
+     completionOpts 
+     += Arg.help "Delete an item, collection or items"
      --TODO: see if there's a way to not document this subcommand
   names = Arg.record Names { toplevel = Arg.def }
     [toplevel := ""
@@ -64,6 +74,7 @@ dispatch m = case m of
   Complete {}   -> defaultConfig >>= CComplete.execute m
   Uncomplete {} -> defaultConfig >>= CUncomplete.execute m
   Names {}      -> defaultConfig >>= CNames.execute m
+  Delete {}     -> defaultConfig >>= CDelete.execute m
 
 completionOpts = [name := error "Must specify a name"
                        += Arg.argPos 0

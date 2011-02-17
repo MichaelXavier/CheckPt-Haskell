@@ -25,7 +25,9 @@ dataSetTests = [group1,
                 group13,
                 group14,
                 group15,
-                group16]
+                group16,
+                group17,
+                group18]
 
 -- Fixtures (yay functional programming!)
 mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = []}
@@ -183,6 +185,21 @@ test34 = testCase "Is an empty list with bogus collection" $ DS.collectionNames 
           where ds = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
 
 test35 = testCase "it is only the items under the specified collection" $ DS.collectionNames ds "Foos" @?= ["\"Foo1\"", "\"Foo2\""]
+          where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1,mi2] }
+                mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = [mi1,mi2] }
+                ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+
+group17 = testGroup "DataSet deleteCollection" [test36, test37]
+
+test36 = testCase "Does nothing with a bogus name" $ DS.deleteCollection ds "Bogus" @?= ds
+          where ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+
+test37 = testCase "Only deletes the collection specified" $ (DS.collections $DS.deleteCollection ds "Foos") @?= [mc2]
+          where ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+
+group18 = testGroup "DataSet deleteCollectionItems" [test38]
+
+test38 = testCase "Only deletes specific items in specific collections" $ (MC.items $ last $ DS.collections $ DS.deleteCollectionItems ds "Bars" ["Foo2"]) @?= [mi1]
           where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1,mi2] }
                 mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = [mi1,mi2] }
                 ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }

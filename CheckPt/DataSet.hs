@@ -13,10 +13,13 @@ module CheckPt.DataSet ( DataSet(..),
                          clearCollections,
                          clearCollection,
                          unclearCollection,
+                         deleteCollection,
                          clearCollectionItems,
                          unclearCollectionItems,
+                         deleteCollectionItems,
                          clearItem,
                          unclearItem,
+                         deleteItem,
                          rootNames,
                          collectionNames,
                          dataSetPath ) where
@@ -103,17 +106,26 @@ clearCollection = transformCollection (MC.complete)
 unclearCollection :: DataSet -> String -> DataSet
 unclearCollection = transformCollection (MC.uncomplete)
 
+deleteCollection :: DataSet -> String -> DataSet
+deleteCollection ds n = ds { collections = filter ( not . collectionMatch n) $ collections ds}
+
 clearCollectionItems :: DataSet -> String -> [String] -> DataSet
 clearCollectionItems ds cn ins = transformCollection (flip MC.clearItems ins) ds cn
 
 unclearCollectionItems :: DataSet -> String -> [String] -> DataSet
 unclearCollectionItems ds cn ins = transformCollection (flip MC.unclearItems ins) ds cn
 
+deleteCollectionItems :: DataSet -> String -> [String] -> DataSet
+deleteCollectionItems ds cn ins = transformCollection (flip MC.deleteItems ins) ds cn
+
 clearItem :: DataSet -> String -> DataSet
 clearItem = transformItem MI.complete
 
 unclearItem :: DataSet -> String -> DataSet
 unclearItem = transformItem MI.uncomplete
+
+deleteItem :: DataSet -> String -> DataSet
+deleteItem ds n = ds { items = filter ( not . itemMatch n) $ items ds}
 
 rootNames :: DataSet -> [String]
 rootNames ds = is ++ cs
@@ -144,7 +156,7 @@ transformItem t ds n = case break (itemMatch n) $ items ds of
 
 transformCollection :: (MC.MediaCollection -> MC.MediaCollection) -> DataSet -> String -> DataSet
 transformCollection t ds n = case break (collectionMatch n) $ collections ds of
-                         (_, [])     -> error $ "Could not find item " ++ n
+                         (_, [])     -> error $ "Could not find collection " ++ n
                          (h, (x:xs)) -> ds { collections = h ++ (t x):xs }
 
 collectionsFold :: (MC.MediaCollection -> MC.MediaCollection) -> DataSet -> DataSet

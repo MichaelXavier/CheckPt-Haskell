@@ -32,11 +32,17 @@ checkpt complete "Fallen Dragon"
 *Complete item(s) under a collection (implemented)*
 checkpt complete "Mad Men" "Ep 1" "Ep 2" "Ep 3"
 
-*Uncomplete a root level item*
+*Uncomplete a root level item (implemented)*
 checkpt uncomplete "Fallen Dragon"
 
-*Uncomplete item(s) under a collection*
+*Uncomplete item(s) under a collection (implemented)*
 checkpt uncomplete "Mad Men" "Ep 1" "Ep 2" "Ep 3"
+
+*Delete a root level item (implemented)*
+checkpt delete "Fallen Dragon"
+
+*Delete item(s) under a collection (implemented)*
+checkpt delete "Mad Men" "Ep 1" "Ep 2" "Ep 3"
 
 TODO
 ====
@@ -45,6 +51,7 @@ TODO
 * Tab completion to make complex names useful
 * Use a proper hash (Data.Map?) for unique items and media collections
 * Proper documentation
+* Unambiguous way to complete/uncomplete/delete full media collecitons
 
 Disclaimer
 ==========

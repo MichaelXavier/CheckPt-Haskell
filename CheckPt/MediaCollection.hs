@@ -4,6 +4,7 @@ module CheckPt.MediaCollection ( MediaCollection(..),
                                  complete,
                                  uncomplete,
                                  unclearItems,
+                                 deleteItems,
                                  clearItems ) where
 
 import Text.JSON
@@ -31,6 +32,10 @@ clearItems = foldl clearItem
 
 unclearItems :: MediaCollection -> [String] -> MediaCollection
 unclearItems = foldl unclearItem
+
+deleteItems :: MediaCollection -> [String] -> MediaCollection
+deleteItems mc ns = mc { items = filter notIn $ items mc }
+									  where notIn i = not $ any (flip itemMatch i) ns
 
 instance Show MediaCollection where
   show mc = join $ filter (not . null) [(name mc), is]

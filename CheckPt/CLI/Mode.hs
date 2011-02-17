@@ -7,10 +7,11 @@ import Data.Data    (Data    )
 import CheckPt.Config (Config)
 
 data Mode
-  = Add  { name :: String, completed :: Bool }
-  | List { rootonly :: Bool }
-  | Collection { cname :: String , inames :: [String] }
-  | Complete { name :: String , inames :: [String], clear :: Bool }
-  | Uncomplete { name :: String , inames :: [String], clear :: Bool }
-  | Names { toplevel :: String }
+  = Add        { name :: String, completed :: Bool                  } 
+  | List       { rootonly :: Bool                                   } 
+  | Collection { cname :: String , inames :: [String]               } 
+  | Complete   { name :: String , inames :: [String], clear :: Bool } 
+  | Uncomplete { name :: String , inames :: [String], clear :: Bool } 
+  | Delete     { name :: String , inames :: [String], clear :: Bool } 
+  | Names      { toplevel :: String                                 }
   deriving (Show, Typeable, Data)
