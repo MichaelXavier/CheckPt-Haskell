@@ -1,5 +1,10 @@
 {-# LANGUAGE DeriveDataTypeable #-}   
-module CheckPt.MediaCollection ( MediaCollection(..), push, complete, clearItems) where
+module CheckPt.MediaCollection ( MediaCollection(..), 
+                                 push,
+                                 complete,
+                                 uncomplete,
+                                 unclearItems,
+                                 clearItems ) where
 
 import Text.JSON
 import Text.JSON.Generic
@@ -16,10 +21,16 @@ push :: MediaCollection -> MI.MediaItem -> MediaCollection
 push mc mi = mc { items = mi:(items mc) }
 
 complete :: MediaCollection -> MediaCollection
-complete mc = mc { items = map MI.complete $ items mc}
+complete = itemsFold MI.complete
+
+uncomplete :: MediaCollection -> MediaCollection
+uncomplete = itemsFold MI.uncomplete
 
 clearItems :: MediaCollection -> [String] -> MediaCollection
-clearItems mc ins = foldl clearItem mc ins
+clearItems = foldl clearItem
+
+unclearItems :: MediaCollection -> [String] -> MediaCollection
+unclearItems = foldl unclearItem
 
 instance Show MediaCollection where
   show mc = join $ filter (not . null) [(name mc), is]
@@ -29,13 +40,19 @@ instance Show MediaCollection where
 
 -- Utilities
 clearItem :: MediaCollection -> String -> MediaCollection
-clearItem mc n = transformItem MI.complete mc n
+clearItem = transformItem MI.complete
+
+unclearItem :: MediaCollection -> String -> MediaCollection
+unclearItem = transformItem MI.uncomplete
 
 -- REFACTOR
 transformItem :: (MI.MediaItem -> MI.MediaItem) -> MediaCollection -> String -> MediaCollection
 transformItem t mc n = case break (itemMatch n) $ items mc of
                          (_, [])     -> error $ "Could not find item " ++ n
                          (h, (x:xs)) -> mc { items = h ++ (t x):xs }
+
+itemsFold :: (MI.MediaItem -> MI.MediaItem) -> MediaCollection -> MediaCollection
+itemsFold t mc = mc { items = map t $ items mc }
 
 -- REFACTOR
 itemMatch :: String -> MI.MediaItem -> Bool

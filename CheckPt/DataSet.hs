@@ -12,8 +12,11 @@ module CheckPt.DataSet ( DataSet(..),
                          collectionExists,
                          clearCollections,
                          clearCollection,
+                         unclearCollection,
                          clearCollectionItems,
+                         unclearCollectionItems,
                          clearItem,
+                         unclearItem,
                          rootNames,
                          collectionNames,
                          dataSetPath ) where
@@ -83,22 +86,34 @@ lookupCollection ds n = case flist $ collections ds of
                   where flist = filter ((==n) . MC.name)
 
 itemExists :: DataSet -> String -> Bool
-itemExists ds s = isJust $ lookupItem ds s
+itemExists ds n = isJust $ lookupItem ds n
 
 collectionExists :: DataSet -> String -> Bool
-collectionExists ds s = isJust $ lookupCollection ds s
+collectionExists ds n= isJust $ lookupCollection ds n
 
 clearCollections :: DataSet -> DataSet
-clearCollections ds = ds { collections = map MC.complete $ collections ds }
+clearCollections = collectionsFold MC.complete
+
+unclearCollections :: DataSet -> DataSet
+unclearCollections = collectionsFold MC.uncomplete
 
 clearCollection :: DataSet -> String -> DataSet
-clearCollection ds n = transformCollection (MC.complete) ds n
+clearCollection = transformCollection (MC.complete)
+
+unclearCollection :: DataSet -> String -> DataSet
+unclearCollection = transformCollection (MC.uncomplete)
 
 clearCollectionItems :: DataSet -> String -> [String] -> DataSet
 clearCollectionItems ds cn ins = transformCollection (flip MC.clearItems ins) ds cn
 
+unclearCollectionItems :: DataSet -> String -> [String] -> DataSet
+unclearCollectionItems ds cn ins = transformCollection (flip MC.unclearItems ins) ds cn
+
 clearItem :: DataSet -> String -> DataSet
-clearItem ds n = transformItem MI.complete ds n
+clearItem = transformItem MI.complete
+
+unclearItem :: DataSet -> String -> DataSet
+unclearItem = transformItem MI.uncomplete
 
 rootNames :: DataSet -> [String]
 rootNames ds = is ++ cs
@@ -131,6 +146,9 @@ transformCollection :: (MC.MediaCollection -> MC.MediaCollection) -> DataSet -> 
 transformCollection t ds n = case break (collectionMatch n) $ collections ds of
                          (_, [])     -> error $ "Could not find item " ++ n
                          (h, (x:xs)) -> ds { collections = h ++ (t x):xs }
+
+collectionsFold :: (MC.MediaCollection -> MC.MediaCollection) -> DataSet -> DataSet
+collectionsFold t ds = ds { collections = map t $ collections ds }
 
 qWrap :: String -> String
 qWrap s = '"':s ++ "\""

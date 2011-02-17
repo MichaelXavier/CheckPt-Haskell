@@ -7,7 +7,7 @@ import Test.HUnit ((@?=))
 import qualified CheckPt.MediaCollection as MC
 import qualified CheckPt.MediaItem as MI
 
-mediaCollectionTests = [group1, group2, group3, group4]
+mediaCollectionTests = [group1, group2, group3, group4, group5, group6]
 
 -- Fixtures
 mi1 = MI.MediaItem { MI.name = "Foo1", MI.completed = True }
@@ -48,3 +48,23 @@ test7 = testCase "Does nothing if given an empty name list" $ MC.clearItems mc [
 test8 = testCase "Only marks the select names as complete" $ (MC.items $ MC.clearItems mc ["Foo2"]) @?= [mi1, mi3]
           where mc  = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi2] }
                 mi3 = MI.MediaItem { MI.name = "Foo2", MI.completed = True }
+
+
+group5 = testGroup "CheckPt uncomplete" [test9, test10]
+
+test9 = testCase "Does nothing to an MC with no items" $ MC.uncomplete base_mc @?= base_mc
+
+test10 = testCase "Marks all items as incomplete" $ (MC.items $ MC.uncomplete mc) @?= [mi3,mi2]
+          where mc  = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi2] }
+                mi1 = MI.MediaItem { MI.name = "Foo1", MI.completed = True }
+                mi2 = MI.MediaItem { MI.name = "Foo2", MI.completed = False }
+                mi3 = MI.MediaItem { MI.name = "Foo1", MI.completed = False }
+
+group6 = testGroup "CheckPt unclearitems" [test11, test12]
+
+test11 = testCase "Does nothing if given an empty name list" $ MC.unclearItems mc [] @?= mc
+          where mc  = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi2] }
+
+test12 = testCase "Only marks the select names as incomplete" $ (MC.items $ MC.unclearItems mc ["Foo1"]) @?= [mi3, mi2]
+          where mc  = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi2] }
+                mi3 = MI.MediaItem { MI.name = "Foo1", MI.completed = False }
