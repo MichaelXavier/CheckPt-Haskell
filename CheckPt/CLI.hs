@@ -8,13 +8,14 @@ import           System.Console.CmdArgs((+=),Annotate((:=)),(&=))
 
 import CheckPt.Config (Config(..), defaultConfig)
 import CheckPt.CLI.Mode (Mode(..))
-import CheckPt.CLI.Add as CAdd (execute)
-import CheckPt.CLI.List as CList (execute)
+import CheckPt.CLI.Add        as CAdd (execute)
+import CheckPt.CLI.List       as CList (execute)
 import CheckPt.CLI.Collection as CCollection (execute)
-import CheckPt.CLI.Complete as CComplete (execute)
+import CheckPt.CLI.Complete   as CComplete (execute)
 import CheckPt.CLI.Uncomplete as CUncomplete (execute)
-import CheckPt.CLI.Names as CNames (execute)
-import CheckPt.CLI.Delete as CDelete (execute)
+import CheckPt.CLI.Names      as CNames (execute)
+import CheckPt.CLI.Delete     as CDelete (execute)
+import CheckPt.CLI.Init       as CInit (execute)
 
 
 -- Valid modes for checkpt executable:
@@ -26,7 +27,8 @@ modes  = Arg.modes_  [add,
 											complete,
 											uncomplete,
 											names,
-											delete]
+											delete,
+											init]
       += Arg.program "checkpt"
       += Arg.summary "checkpt: track your consumption of media"
       += Arg.help    "TODO:"
@@ -64,6 +66,10 @@ modes  = Arg.modes_  [add,
     [toplevel := ""
           += Arg.args
           += Arg.typ "COLLECTION_NAME"]
+  init = Arg.record Init { force = Arg.def }
+    [force := False
+           += Arg.help "Force overwrite of checkpt file"]
+    += Arg.help "Initialize checkpt"
 
 dispatch :: Mode -> IO ()
 dispatch m = case m of
@@ -74,6 +80,7 @@ dispatch m = case m of
   Uncomplete {} -> defaultConfig >>= CUncomplete.execute m
   Names {}      -> defaultConfig >>= CNames.execute m
   Delete {}     -> defaultConfig >>= CDelete.execute m
+  Init {}       -> defaultConfig >>= CInit.execute m
 
 -- Utilities
 completionOpts = [name := error "Must specify a name"

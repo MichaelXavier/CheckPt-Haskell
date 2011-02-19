@@ -14,4 +14,5 @@ data Mode
   | Uncomplete { name :: String , inames :: [String], clear :: Bool } 
   | Delete     { name :: String , inames :: [String], clear :: Bool } 
   | Names      { toplevel :: String                                 }
+  | Init       { force :: Bool																			}
   deriving (Show, Typeable, Data)
