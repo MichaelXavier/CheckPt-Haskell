@@ -65,7 +65,6 @@ modes  = Arg.modes_  [add,
           += Arg.args
           += Arg.typ "COLLECTION_NAME"]
 
--- Utilities
 dispatch :: Mode -> IO ()
 dispatch m = case m of
   Add {}        -> defaultConfig >>= CAdd.execute m
@@ -76,6 +75,7 @@ dispatch m = case m of
   Names {}      -> defaultConfig >>= CNames.execute m
   Delete {}     -> defaultConfig >>= CDelete.execute m
 
+-- Utilities
 completionOpts = [name := error "Must specify a name"
                        += Arg.argPos 0
                        += Arg.typ "NAME",
@@ -83,4 +83,4 @@ completionOpts = [name := error "Must specify a name"
                        += Arg.args
                        += Arg.typ "ITEM_NAMES",
                   clear := False
-                       += Arg.help "Mark ALL collection items complete"]
+                       += Arg.help "Operate on ALL collection items"]

@@ -10,6 +10,9 @@ clean: Setup.hs
 build: config
 	$(CC) build
 
+install: build
+	$(CC) install
+
 build_test: config_test
 	$(CC) build
 
