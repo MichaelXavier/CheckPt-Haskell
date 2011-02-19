@@ -2,6 +2,7 @@
 module CheckPt.DataSet ( DataSet(..), 
                          readDataSet,
                          writeDataSet,
+                         writeIfSuccess,
                          parseDataSet,
                          stringify,
                          pushItem,
@@ -26,8 +27,7 @@ module CheckPt.DataSet ( DataSet(..),
 
 import System.FilePath ((</>))
 
-import Text.JSON
-import Text.JSON.Generic
+import Text.JSON.Generic (decodeJSON, encodeJSON, Data, Typeable)
 
 import Maybe (isJust)
 import Data.List (intercalate)
@@ -36,6 +36,7 @@ import qualified Data.ByteString.Char8 as Str
 import qualified CheckPt.MediaCollection as MC
 import qualified CheckPt.MediaItem as MI
 import CheckPt.Config (Config(..))
+import CheckPt.CLI.Result (Result(..))
 
 data DataSet = DataSet { collections :: [MC.MediaCollection],
                          items :: [MI.MediaItem] 
@@ -56,6 +57,10 @@ readDataSet c =  fmap parseDataSet str
 
 writeDataSet :: Config -> DataSet -> IO ()
 writeDataSet c ds = writeFile (extractDataSetPath c) (stringify ds)
+
+writeIfSuccess :: Config -> Result DataSet -> IO ()
+writeIfSuccess c (Success ds) = writeDataSet c ds
+writeIfSuccess _ (Failure f) = putStrLn $ "Error: " ++ f
 
 parseDataSet :: String -> DataSet
 parseDataSet = decodeJSON
@@ -94,38 +99,38 @@ itemExists ds n = isJust $ lookupItem ds n
 collectionExists :: DataSet -> String -> Bool
 collectionExists ds n= isJust $ lookupCollection ds n
 
-clearCollections :: DataSet -> DataSet
-clearCollections = collectionsFold MC.complete
+clearCollections :: DataSet -> Result DataSet
+clearCollections ds = Success $ collectionsFold MC.complete ds
 
-unclearCollections :: DataSet -> DataSet
-unclearCollections = collectionsFold MC.uncomplete
+unclearCollections :: DataSet -> Result DataSet
+unclearCollections ds = Success $ collectionsFold MC.uncomplete ds
 
-clearCollection :: DataSet -> String -> DataSet
+clearCollection :: DataSet -> String -> Result DataSet
 clearCollection = transformCollection (MC.complete)
 
-unclearCollection :: DataSet -> String -> DataSet
+unclearCollection :: DataSet -> String -> Result DataSet
 unclearCollection = transformCollection (MC.uncomplete)
 
-deleteCollection :: DataSet -> String -> DataSet
-deleteCollection ds n = ds { collections = filter ( not . collectionMatch n) $ collections ds}
+deleteCollection :: DataSet -> String -> Result DataSet
+deleteCollection ds n = Success ds { collections = filter ( not . collectionMatch n) $ collections ds}
 
-clearCollectionItems :: DataSet -> String -> [String] -> DataSet
+clearCollectionItems :: DataSet -> String -> [String] -> Result DataSet
 clearCollectionItems ds cn ins = transformCollection (flip MC.clearItems ins) ds cn
 
-unclearCollectionItems :: DataSet -> String -> [String] -> DataSet
+unclearCollectionItems :: DataSet -> String -> [String] -> Result DataSet
 unclearCollectionItems ds cn ins = transformCollection (flip MC.unclearItems ins) ds cn
 
-deleteCollectionItems :: DataSet -> String -> [String] -> DataSet
+deleteCollectionItems :: DataSet -> String -> [String] -> Result DataSet
 deleteCollectionItems ds cn ins = transformCollection (flip MC.deleteItems ins) ds cn
 
-clearItem :: DataSet -> String -> DataSet
+clearItem :: DataSet -> String -> Result DataSet
 clearItem = transformItem MI.complete
 
-unclearItem :: DataSet -> String -> DataSet
+unclearItem :: DataSet -> String -> Result DataSet
 unclearItem = transformItem MI.uncomplete
 
-deleteItem :: DataSet -> String -> DataSet
-deleteItem ds n = ds { items = filter ( not . itemMatch n) $ items ds}
+deleteItem :: DataSet -> String -> Result DataSet
+deleteItem ds n = Success $ ds { items = filter ( not . itemMatch n) $ items ds}
 
 rootNames :: DataSet -> [String]
 rootNames ds = is ++ cs
@@ -149,15 +154,15 @@ collectionMatch :: String -> MC.MediaCollection -> Bool
 collectionMatch n = ((==n) . MC.name)
 
 -- Could do with some polymporhism here but reassembling it into the DS isn't possible
-transformItem :: (MI.MediaItem -> MI.MediaItem) -> DataSet -> String -> DataSet
+transformItem :: (MI.MediaItem -> MI.MediaItem) -> DataSet -> String -> Result DataSet
 transformItem t ds n = case break (itemMatch n) $ items ds of
-                         (_, [])     -> error $ "Could not find item " ++ n
-                         (h, (x:xs)) -> ds { items = h ++ (t x):xs }
+                         (_, [])     -> Failure $ "Could not find item " ++ n
+                         (h, (x:xs)) -> Success $ ds { items = h ++ (t x):xs }
 
-transformCollection :: (MC.MediaCollection -> MC.MediaCollection) -> DataSet -> String -> DataSet
+transformCollection :: (MC.MediaCollection -> MC.MediaCollection) -> DataSet -> String -> Result DataSet
 transformCollection t ds n = case break (collectionMatch n) $ collections ds of
-                         (_, [])     -> error $ "Could not find collection " ++ n
-                         (h, (x:xs)) -> ds { collections = h ++ (t x):xs }
+                         (_, [])     -> Failure $ "Could not find collection " ++ n
+                         (h, (x:xs)) -> Success $ ds { collections = h ++ (t x):xs }
 
 collectionsFold :: (MC.MediaCollection -> MC.MediaCollection) -> DataSet -> DataSet
 collectionsFold t ds = ds { collections = map t $ collections ds }
