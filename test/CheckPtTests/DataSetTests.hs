@@ -9,6 +9,7 @@ import Test.HUnit ((@?=))
 import qualified CheckPt.DataSet as DS
 import qualified CheckPt.MediaItem as MI
 import qualified CheckPt.MediaCollection as MC
+import qualified CheckPt.CLI.Result as R
 
 dataSetTests = [group1, 
                 group2,
@@ -35,6 +36,13 @@ mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = []}
 mi1 = MI.MediaItem { MI.name = "Foo1", MI.completed = False}
 mi2 = MI.MediaItem { MI.name = "Foo2", MI.completed = False}
 base_ds = DS.DataSet { DS.collections = [], DS.items = [] }
+
+fromSuccess :: R.Result DS.DataSet -> DS.DataSet
+fromSuccess (R.Success d) = d
+
+isFailure :: R.Result DS.DataSet -> Bool
+isFailure (R.Failure _) = True
+isFailure _ = False
 
 group1 = testGroup "DataSet parseDataSet" [test1, test2, test3, test4]
 
@@ -137,16 +145,16 @@ test24 = testCase "Returns False if the collection is found" $ DS.collectionExis
 
 group11 = testGroup "DataSet clearCollections" [test25, test26]
 
-test25 = testCase "Does nothing on with empty collections" $ DS.clearCollections base_ds @?= base_ds
+test25 = testCase "Does nothing on with empty collections" $ (fromSuccess $ DS.clearCollections base_ds) @?= base_ds
 
-test26 = testCase "Sets all collections to completed" $ (all MI.completed $ concatMap MC.items $ DS.collections $ DS.clearCollections ds) @?= True
+test26 = testCase "Sets all collections to completed" $ (all MI.completed $ concatMap MC.items . DS.collections . fromSuccess $ DS.clearCollections ds) @?= True
           where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi2] }
                 mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = [mi1, mi2] }
                 ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
 
 group12 = testGroup "DataSet clearCollection" [test27]
 
-test27 = testCase "Sets the found collection to completed" $ (MC.items $ last $ DS.collections $ DS.clearCollection ds "Bars") @?= [mi3,mi4]
+test27 = testCase "Sets the found collection to completed" $ (MC.items . last . DS.collections . fromSuccess $ DS.clearCollection ds "Bars") @?= [mi3,mi4]
           where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1,mi2] }
                 mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = [mi1,mi2] }
                 mi3 = MI.MediaItem { MI.name = "Foo1", MI.completed = True}
@@ -155,7 +163,7 @@ test27 = testCase "Sets the found collection to completed" $ (MC.items $ last $ 
 
 group13 = testGroup "DataSet clearCollectionItems" [test28]
 
-test28 = testCase "Only completes specific items in specific collections" $ (MC.items $ last $ DS.collections $ DS.clearCollectionItems ds "Bars" ["Foo2"]) @?= [mi1,mi3]
+test28 = testCase "Only completes specific items in specific collections" $ (MC.items . last . DS.collections . fromSuccess $  DS.clearCollectionItems ds "Bars" ["Foo2"]) @?= [mi1,mi3]
           where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1,mi2] }
                 mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = [mi1,mi2] }
                 mi3 = MI.MediaItem { MI.name = "Foo2", MI.completed = True}
@@ -163,7 +171,7 @@ test28 = testCase "Only completes specific items in specific collections" $ (MC.
 
 group14 = testGroup "DataSet clearItem" [test29]
 
-test29 = testCase "Clears only the specified root item" $ (DS.items $ DS.clearItem ds "Foo2") @?= [mi1,mi3]
+test29 = testCase "Clears only the specified root item" $ (DS.items . fromSuccess $ DS.clearItem ds "Foo2") @?= [mi1,mi3]
           where mi3 = MI.MediaItem { MI.name = "Foo2", MI.completed = True}
                 ds  = DS.DataSet { DS.collections = [], DS.items = [mi1,mi2] }
 
@@ -191,15 +199,15 @@ test35 = testCase "it is only the items under the specified collection" $ DS.col
 
 group17 = testGroup "DataSet deleteCollection" [test36, test37]
 
-test36 = testCase "Does nothing with a bogus name" $ DS.deleteCollection ds "Bogus" @?= ds
+test36 = testCase "Does nothing with a bogus name" $ (fromSuccess $ DS.deleteCollection ds "Bogus") @?= ds
           where ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
 
-test37 = testCase "Only deletes the collection specified" $ (DS.collections $DS.deleteCollection ds "Foos") @?= [mc2]
+test37 = testCase "Only deletes the collection specified" $ ( DS.collections . fromSuccess $ DS.deleteCollection ds "Foos") @?= [mc2]
           where ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
 
 group18 = testGroup "DataSet deleteCollectionItems" [test38]
 
-test38 = testCase "Only deletes specific items in specific collections" $ (MC.items $ last $ DS.collections $ DS.deleteCollectionItems ds "Bars" ["Foo2"]) @?= [mi1]
+test38 = testCase "Only deletes specific items in specific collections" $ (MC.items . last . DS.collections . fromSuccess $ DS.deleteCollectionItems ds "Bars" ["Foo2"]) @?= [mi1]
           where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1,mi2] }
                 mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = [mi1,mi2] }
                 ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
