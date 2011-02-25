@@ -36,7 +36,7 @@ test3 = testCase "Just prints the name for an empty collection" $ show base_mc @
 
 test4 = testCase "Prints the name and intented items" $ show mc @?= str
           where mc  = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi2] }
-                str = "Foos\n\t[X] Foo1\n\t[ ] Foo2"
+                str = "Foos\n  [X] Foo1\n  [ ] Foo2"
 
 group3 = testGroup "CheckPt complete" [test5, test6]
 

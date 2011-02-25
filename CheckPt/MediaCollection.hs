@@ -47,7 +47,7 @@ deleteItems mc ns = mc { items = filter notIn $ items mc }
 
 instance Show MediaCollection where
   show mc = join $ filter (not . null) [(name mc), is]
-            where  sep     =  "\n\t"
+            where  sep     =  "\n  "
                    is      = join $ map show $ items mc
                    join    = intercalate sep 
 
