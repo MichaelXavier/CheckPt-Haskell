@@ -31,7 +31,7 @@ modes  = Arg.modes_  [add,
 											init]
       += Arg.program "checkpt"
       += Arg.summary "checkpt: track your consumption of media"
-      += Arg.help    "TODO:"
+      += Arg.help    "Run checkpt help SUBCOMMAND to get more info on one of the subcommands listed below."
   where
   add = Arg.record Add {name = Arg.def, completed = Arg.def}
     [name := error "Must specify a name"
@@ -43,6 +43,7 @@ modes  = Arg.modes_  [add,
     [rootonly := False
               += Arg.help "Only list root level items"]
     += Arg.help "Display your list"
+    += Arg.auto
   collection = Arg.record Collection { cname = Arg.def, inames = Arg.def }
     [cname := error "Must specify a name"
           += Arg.argPos 0
@@ -63,7 +64,7 @@ modes  = Arg.modes_  [add,
      += Arg.help "Delete an item, collection or items"
      --TODO: see if there's a way to not document this subcommand
   names = Arg.record Names { toplevel = Arg.def }
-    [toplevel := ""
+    [toplevel := "Used for CLI completion"
           += Arg.args
           += Arg.typ "COLLECTION_NAME"]
   init = Arg.record Init { force = Arg.def }
