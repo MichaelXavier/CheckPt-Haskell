@@ -28,13 +28,15 @@ dataSetTests = [group1,
                 group15,
                 group16,
                 group17,
-                group18]
+                group18,
+                group19]
 
 -- Fixtures (yay functional programming!)
 mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = []}
 mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = []}
-mi1 = MI.MediaItem { MI.name = "Foo1", MI.completed = False}
-mi2 = MI.MediaItem { MI.name = "Foo2", MI.completed = False}
+mi1 = MI.MediaItem { MI.name = "Foo1", MI.completed = False }
+mi2 = MI.MediaItem { MI.name = "Foo2", MI.completed = False }
+mi3 = MI.MediaItem { MI.name = "Foo3", MI.completed = True }
 base_ds = DS.DataSet { DS.collections = [], DS.items = [] }
 
 fromSuccess :: R.Result DS.DataSet -> DS.DataSet
@@ -211,3 +213,17 @@ test38 = testCase "Only deletes specific items in specific collections" $ (MC.it
           where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1,mi2] }
                 mc2 = MC.MediaCollection { MC.name = "Bars", MC.items = [mi1,mi2] }
                 ds  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+
+group19 = testGroup "DataSet garbageCollect" [test39, test40, test41]
+
+test39 = testCase "Does nothing on an empty DataSet" $ DS.garbageCollect base_ds @?= base_ds
+
+test40 = testCase "Deletes completed items" $ DS.garbageCollect base_ds @?= base_ds
+          where ds  = DS.DataSet { DS.collections = [], DS.items = [mi3, mi3] }
+
+test41 = testCase "Deletes completed MediaCollections" $ DS.garbageCollect ds1 @?= ds2
+          where mc1  = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1,mi3] }
+                mc1b = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1] }
+                mc2  = MC.MediaCollection { MC.name = "Bars", MC.items = [mi3,mi3] }
+                ds1  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
+                ds2  = DS.DataSet { DS.collections = [mc1b], DS.items = [] }

@@ -23,6 +23,7 @@ module CheckPt.DataSet ( DataSet(..),
                          deleteItem,
                          rootNames,
                          collectionNames,
+                         garbageCollect,
                          dataSetPath ) where
 
 import System.FilePath ((</>))
@@ -141,6 +142,11 @@ collectionNames :: DataSet -> String -> [String]
 collectionNames ds n = case lookupCollection ds n of
                          Just c -> map (qWrap . MI.name) $ MC.items c
                          _      -> []
+
+garbageCollect :: DataSet -> DataSet
+garbageCollect ds = ds { items = gcItems $ items ds, collections = gcCollections $ collections ds }
+                    where gcItems = filter (not . MI.completed)
+                          gcCollections cs = filter (not . MC.completed) $ map MC.garbageCollect cs
 
 --Utilities
 extractDataSetPath :: Config -> FilePath
