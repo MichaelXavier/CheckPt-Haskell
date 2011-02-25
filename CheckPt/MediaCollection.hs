@@ -3,6 +3,8 @@ module CheckPt.MediaCollection ( MediaCollection(..),
                                  push,
                                  complete,
                                  uncomplete,
+                                 completed,
+                                 garbageCollect,
                                  unclearItems,
                                  deleteItems,
                                  clearItems ) where
@@ -26,6 +28,12 @@ complete = itemsFold MI.complete
 
 uncomplete :: MediaCollection -> MediaCollection
 uncomplete = itemsFold MI.uncomplete
+
+completed :: MediaCollection -> Bool
+completed mc = all MI.completed $ items mc
+
+garbageCollect :: MediaCollection -> MediaCollection
+garbageCollect mc = mc { items = filter (not . MI.completed) $ items mc}
 
 clearItems :: MediaCollection -> [String] -> MediaCollection
 clearItems = foldl clearItem

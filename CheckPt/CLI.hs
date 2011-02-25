@@ -8,14 +8,15 @@ import           System.Console.CmdArgs((+=),Annotate((:=)),(&=))
 
 import CheckPt.Config (Config(..), defaultConfig)
 import CheckPt.CLI.Mode (Mode(..))
-import CheckPt.CLI.Add        as CAdd (execute)
-import CheckPt.CLI.List       as CList (execute)
-import CheckPt.CLI.Collection as CCollection (execute)
-import CheckPt.CLI.Complete   as CComplete (execute)
-import CheckPt.CLI.Uncomplete as CUncomplete (execute)
-import CheckPt.CLI.Names      as CNames (execute)
-import CheckPt.CLI.Delete     as CDelete (execute)
-import CheckPt.CLI.Init       as CInit (execute)
+import CheckPt.CLI.Add            as CAdd (execute)
+import CheckPt.CLI.List           as CList (execute)
+import CheckPt.CLI.Collection     as CCollection (execute)
+import CheckPt.CLI.Complete       as CComplete (execute)
+import CheckPt.CLI.Uncomplete     as CUncomplete (execute)
+import CheckPt.CLI.Names          as CNames (execute)
+import CheckPt.CLI.Delete         as CDelete (execute)
+import CheckPt.CLI.GarbageCollect as CGarbageCollect (execute)
+import CheckPt.CLI.Init           as CInit (execute)
 
 
 -- Valid modes for checkpt executable:
@@ -28,6 +29,7 @@ modes  = Arg.modes_  [add,
 											uncomplete,
 											names,
 											delete,
+											gc,
 											init]
       += Arg.program "checkpt"
       += Arg.summary "checkpt: track your consumption of media"
@@ -62,6 +64,10 @@ modes  = Arg.modes_  [add,
   delete = Arg.record Delete { name = Arg.def, inames = Arg.def, clear = Arg.def }
      completionOpts 
      += Arg.help "Delete an item, collection or items"
+  gc = Arg.record GarbageCollect { }
+     []
+     += Arg.name "gc"
+     += Arg.help "Delete completed line items and collections"
      --TODO: see if there's a way to not document this subcommand
   names = Arg.record Names { toplevel = Arg.def }
     [toplevel := "Used for CLI completion"
@@ -74,14 +80,15 @@ modes  = Arg.modes_  [add,
 
 dispatch :: Mode -> IO ()
 dispatch m = case m of
-  Add {}        -> defaultConfig >>= CAdd.execute m
-  List {}       -> defaultConfig >>= CList.execute m
-  Collection {} -> defaultConfig >>= CCollection.execute m
-  Complete {}   -> defaultConfig >>= CComplete.execute m
-  Uncomplete {} -> defaultConfig >>= CUncomplete.execute m
-  Names {}      -> defaultConfig >>= CNames.execute m
-  Delete {}     -> defaultConfig >>= CDelete.execute m
-  Init {}       -> defaultConfig >>= CInit.execute m
+  Add {}            -> defaultConfig >>= CAdd.execute m
+  List {}           -> defaultConfig >>= CList.execute m
+  Collection {}     -> defaultConfig >>= CCollection.execute m
+  Complete {}       -> defaultConfig >>= CComplete.execute m
+  Uncomplete {}     -> defaultConfig >>= CUncomplete.execute m
+  Names {}          -> defaultConfig >>= CNames.execute m
+  Delete {}         -> defaultConfig >>= CDelete.execute m
+  GarbageCollect {} -> defaultConfig >>= CGarbageCollect.execute m
+  Init {}           -> defaultConfig >>= CInit.execute m
 
 -- Utilities
 completionOpts = [name := error "Must specify a name"
