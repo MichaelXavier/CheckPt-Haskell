@@ -7,7 +7,15 @@ import Test.HUnit ((@?=))
 import qualified CheckPt.MediaCollection as MC
 import qualified CheckPt.MediaItem as MI
 
-mediaCollectionTests = [group1, group2, group3, group4, group5, group6, group7]
+mediaCollectionTests = [group1,
+                        group2,
+                        group3,
+                        group4,
+                        group5,
+                        group6,
+                        group7,
+                        group8,
+                        group9]
 
 -- Fixtures
 mi1 = MI.MediaItem { MI.name = "Foo1", MI.completed = True }
@@ -76,3 +84,24 @@ test13 = testCase "Does nothing if given an empty name list" $ MC.deleteItems mc
 
 test14 = testCase "Only deletes the select names" $ (MC.items $ MC.deleteItems mc ["Foo2"]) @?= [mi1]
           where mc  = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi2] }
+
+group8 = testGroup "CheckPt completed" [test15, test16, test17]
+
+test15 = testCase "Returns True on an empty collection" $ MC.completed base_mc @?= True
+
+test16 = testCase "Returns True on a collection with all completed items" $ MC.completed mc @?= True
+          where mc = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi1]}
+
+test17 = testCase "Returns False on a collection with all incomplete items" $ MC.completed mc @?= False
+          where mc = MC.MediaCollection { MC.name = "Foos", MC.items = [mi2, mi2]}
+
+group9 = testGroup "CheckPt garbageCollect" [test18, test19, test20]
+
+test18 = testCase "Does nothing on an empty MediaCollection" $ MC.garbageCollect base_mc @?= base_mc
+
+test19 = testCase "Does nothing to collections with all completed items" $ MC.garbageCollect mc @?= mc
+          where mc = MC.MediaCollection { MC.name = "Foos", MC.items = [mi2, mi2]}
+
+test20 = testCase "Removes completed items" $ MC.garbageCollect mc1 @?= mc2
+          where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi2]}
+                mc2 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi2]}
