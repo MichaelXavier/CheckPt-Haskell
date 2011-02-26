@@ -18,6 +18,7 @@ Executable checkpt
                      directory == 1.0.1.*,
                      filepath == 1.1.0.*,
                      bytestring == 0.9.1.*,
+                     ansi-wl-pprint == 0.6.*,
                      haskell98
   Other-Modules:     CheckPt
                      CheckPt.CLI
@@ -46,6 +47,7 @@ Executable test
                    directory == 1.0.1.*,
                    filepath == 1.1.0.*,
                    bytestring == 0.9.1.*,
+                   ansi-wl-pprint == 0.6.*,
                    haskell98,
                    HUnit == 1.2.2.*,
                    test-framework == 0.3.*,

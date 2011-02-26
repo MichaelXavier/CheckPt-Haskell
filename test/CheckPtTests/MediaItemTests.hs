@@ -32,4 +32,4 @@ test5 = testCase "Prints a an empty checkbox if incomplete" $ show mi @?= str
 
 test6 = testCase "Prints a an checked checkbox if complete" $ show mi @?= str
           where mi  = MI.MediaItem { MI.name = "Foo Bar", MI.completed = True }
-                str = "[X] Foo Bar"
+                str = "[\ESC[32mX\ESC[0m] Foo Bar"
