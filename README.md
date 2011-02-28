@@ -22,47 +22,47 @@ Usage
 =====
 *Show entire list*
 
-checkpt list
+`checkpt list`
 
 *List (root level) Items*
 
-checkpt list -r
+`checkpt list -r`
 
 *Add a root item*
 
-checkpt add "Fallen Dragon"
+`checkpt add "Fallen Dragon"`
 
 *Add a collection if it exists, list it otherwise*
 
-checkpt collection "Mad Men"
+`checkpt collection "Mad Men"`
 
 *Add a collection and items if it doesn't exist*
 
-checkpt collection "Mad Men" "Ep 1" "Ep 2" "Ep 3"
+`checkpt collection "Mad Men" "Ep 1" "Ep 2" "Ep 3"`
 
 *Complete a root level item*
 
-checkpt complete "Fallen Dragon"
+`checkpt complete "Fallen Dragon"`
 
 *Complete item(s) under a collection*
 
-checkpt complete "Mad Men" "Ep 1" "Ep 2" "Ep 3"
+`checkpt complete "Mad Men" "Ep 1" "Ep 2" "Ep 3"`
 
 *Uncomplete a root level item*
 
-checkpt uncomplete "Fallen Dragon"
+`checkpt uncomplete "Fallen Dragon"`
 
 *Uncomplete item(s) under a collection*
 
-checkpt uncomplete "Mad Men" "Ep 1" "Ep 2" "Ep 3"
+`checkpt uncomplete "Mad Men" "Ep 1" "Ep 2" "Ep 3"`
 
 *Delete a root level item*
 
-checkpt delete "Fallen Dragon"
+`checkpt delete "Fallen Dragon"`
 
 *Delete item(s) under a collection*
 
-checkpt delete "Mad Men" "Ep 1" "Ep 2" "Ep 3"
+`checkpt delete "Mad Men" "Ep 1" "Ep 2" "Ep 3"`
 
 Ideas
 =====
