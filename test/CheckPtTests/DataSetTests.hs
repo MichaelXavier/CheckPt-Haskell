@@ -29,7 +29,8 @@ dataSetTests = [group1,
                 group16,
                 group17,
                 group18,
-                group19]
+                group19,
+                group20]
 
 -- Fixtures (yay functional programming!)
 mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = []}
@@ -227,3 +228,11 @@ test41 = testCase "Deletes completed MediaCollections" $ DS.garbageCollect ds1 @
                 mc2  = MC.MediaCollection { MC.name = "Bars", MC.items = [mi3,mi3] }
                 ds1  = DS.DataSet { DS.collections = [mc1,mc2], DS.items = [] }
                 ds2  = DS.DataSet { DS.collections = [mc1b], DS.items = [] }
+
+group20 = testGroup "DataSet appendCollection" [test42, test43]
+
+test42 = testCase "Fails on collections which don't exist" $ (isFailure $ DS.appendCollection base_ds "bogus" [mi1]) @?= True
+
+test43 = testCase "Appends items to the collection" $ (head $ DS.collections $ fromSuccess $ DS.appendCollection ds1 "Foos" [mi1, mi2]) @?= mc1b
+          where ds1  = DS.DataSet { DS.collections = [mc1], DS.items = [] }
+                mc1b = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi2]}

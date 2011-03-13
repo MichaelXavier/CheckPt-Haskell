@@ -40,6 +40,9 @@ Usage
 
 `checkpt collection "Mad Men" "Ep 1" "Ep 2" "Ep 3"`
 
+*Add items to a collection*
+`checkpt add "Mad Men" "Ep 4" "Ep 5"`
+
 *Complete a root level item*
 
 `checkpt complete "Fallen Dragon"`

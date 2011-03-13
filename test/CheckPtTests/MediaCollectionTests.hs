@@ -15,18 +15,22 @@ mediaCollectionTests = [group1,
                         group6,
                         group7,
                         group8,
-                        group9]
+                        group9,
+                        group10]
 
 -- Fixtures
 mi1 = MI.MediaItem { MI.name = "Foo1", MI.completed = True }
 mi2 = MI.MediaItem { MI.name = "Foo2", MI.completed = False }
 base_mc = MC.MediaCollection { MC.name = "Foos", MC.items = [] }
 
-group1 = testGroup "CheckPt Push" [test1, test2]
+group1 = testGroup "CheckPt Push" [test1, test2, test2']
 
 test1 = testCase "Adds to empty items list" $ (MC.items $ MC.push base_mc mi1) @?= [mi1]
 
 test2 = testCase "Prepends to non-empty items list" $ head (MC.items $ MC.push mc mi2) @?= mi2
+          where mc  = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1] }
+
+test2' = testCase "Skips duplicates" $ (MC.push mc mi1) @?= mc
           where mc  = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1] }
 
 group2 = testGroup "CheckPt show" [test3, test4]
@@ -105,3 +109,15 @@ test19 = testCase "Does nothing to collections with all completed items" $ MC.ga
 test20 = testCase "Removes completed items" $ MC.garbageCollect mc1 @?= mc2
           where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi2]}
                 mc2 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi2]}
+
+group10 = testGroup "CheckPt append" [test21, test22, test23, test24]
+test21 = testCase "Does nothing when given 0 items" $ MC.append base_mc [] @?= base_mc
+
+test22 = testCase "Can append a single item" $ MC.append base_mc [mi1] @?= mc1
+          where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1]}
+
+test23 = testCase "Does not append duplicates" $ MC.append base_mc [mi1, mi1] @?= mc1
+          where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1]}
+
+test24 = testCase "Appends multiple items" $ MC.append base_mc [mi1, mi2] @?= mc1
+          where mc1 = MC.MediaCollection { MC.name = "Foos", MC.items = [mi1, mi2]}

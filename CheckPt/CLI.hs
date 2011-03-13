@@ -35,12 +35,15 @@ modes  = Arg.modes_  [add,
       += Arg.summary "checkpt: track your consumption of media"
       += Arg.help    "Run checkpt help SUBCOMMAND to get more info on one of the subcommands listed below."
   where
-  add = Arg.record Add {name = Arg.def, completed = Arg.def}
-    [name := error "Must specify a name"
+  add = Arg.record Add {name = Arg.def, inames = Arg.def, completed = Arg.def}
+    [name := error "Must specify an item or collection name"
           += Arg.argPos 0
-          += Arg.typ "NAME",
+          += Arg.typ "ITEM_OR_COLLECTION",
+     inames := []
+           += Arg.args
+           += Arg.typ "ITEM_NAMES_IF_COLLECTION",
      completed := False]
-    += Arg.help "Add a root level item to your list"
+    += Arg.help "With 1 argument, adds root level item. With 2, adds item to a collection"
   list = Arg.record List { rootonly = Arg.def }
     [rootonly := False
               += Arg.help "Only list root level items"]

@@ -7,6 +7,7 @@ module CheckPt.DataSet ( DataSet(..),
                          stringify,
                          pushItem,
                          pushCollection,
+                         appendCollection,
                          lookupItem,
                          lookupCollection,
                          itemExists,
@@ -81,6 +82,10 @@ pushCollection :: DataSet -> MC.MediaCollection -> DataSet
 pushCollection ds mc 
             | itemExists ds $ MC.name mc = error "Name taken"
             | otherwise                  = ds { collections = mc:(collections ds) }
+
+appendCollection :: DataSet -> String -> [MI.MediaItem] -> Result DataSet
+appendCollection ds _ [] = Success ds
+appendCollection ds cn mis = transformCollection (flip MC.append mis) ds cn
 
 lookupItem :: DataSet -> String -> Maybe MI.MediaItem
 lookupItem ds n = case flist $ items ds of

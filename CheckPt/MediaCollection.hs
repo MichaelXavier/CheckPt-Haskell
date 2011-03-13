@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable #-}   
 module CheckPt.MediaCollection ( MediaCollection(..), 
                                  push,
+                                 append,
                                  complete,
                                  uncomplete,
                                  completed,
@@ -20,8 +21,14 @@ data MediaCollection = MediaCollection { name :: String,
                                          items :: [MI.MediaItem]
                                        } deriving (Eq, Data, Typeable)
 
+--TODO: specme make sure duplicates can't be added in push
 push :: MediaCollection -> MI.MediaItem -> MediaCollection
-push mc mi = mc { items = mi:(items mc) }
+push mc mi
+        | itemExists mc (MI.name mi) = mc
+        | otherwise = mc { items = mi:(items mc) }
+
+append :: MediaCollection -> [MI.MediaItem] -> MediaCollection
+append mc mis = foldl push mc $ reverse mis
 
 complete :: MediaCollection -> MediaCollection
 complete = itemsFold MI.complete
@@ -70,3 +77,6 @@ itemsFold t mc = mc { items = map t $ items mc }
 -- REFACTOR
 itemMatch :: String -> MI.MediaItem -> Bool
 itemMatch n = ((==n) . MI.name)
+
+itemExists :: MediaCollection -> String -> Bool
+itemExists mc n = any (itemMatch n) $ items mc
